@@ -62,7 +62,7 @@ async function run() {
     const values = getValues(getInput("values"));
     const valueFiles = getValueFiles(getInput("value_files"));
     const timeout = getInput("timeout");
-    const repository = getInput("repository");
+    const repo = getInput("repo");
     const dryRun = core.getInput("dry-run");
     const atomic = getInput("atomic") || false;
 
@@ -75,7 +75,7 @@ async function run() {
     core.debug(`param: dryRun = "${dryRun}"`);
     core.debug(`param: valueFiles = "${JSON.stringify(valueFiles)}"`);
     core.debug(`param: timeout = "${timeout}"`);
-    core.debug(`param: repository = "${repository}"`);
+    core.debug(`param: repo = "${repo}"`);
     core.debug(`param: atomic = "${atomic}"`);
 
     // Setup command options and arguments.
@@ -94,8 +94,8 @@ async function run() {
     if (timeout) {
       args.push(`--timeout=${timeout}`);
     }
-    if (repository) {
-      args.push(`--repo=${repository}`);
+    if (repo) {
+      args.push(`--repo=${repo}`);
     }
     if (atomic === true) {
       args.push("--atomic");
