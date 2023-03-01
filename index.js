@@ -66,7 +66,6 @@ async function run() {
     const atomic = getInput("atomic") || false;
 
     core.debug(`param: release = "${release}"`);
-    core.debug(`param: appName = "${appName}"`);
     core.debug(`param: namespace = "${namespace}"`);
     core.debug(`param: chart = "${chart}"`);
     core.debug(`param: version = "${version}"`);
