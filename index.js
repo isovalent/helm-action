@@ -93,7 +93,7 @@ async function run() {
     ];
 
     if (version) {
-      args.push(`--version=${chartVersion}`);
+      args.push(`--version=${version}`);
     }
     if (timeout) {
       args.push(`--timeout=${timeout}`);
