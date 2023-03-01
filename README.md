@@ -44,7 +44,8 @@ jobs:
       with:
         release: 'mysql'
         namespace: 'default'
-        chart: 'bitnami/mysql'
+        chart: 'mysql'
+        repository: https://charts.bitnami.com/bitnami
         values: |
           fullnameOverride: mysql
         # You can also reference files by providing an array of filenames
