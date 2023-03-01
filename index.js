@@ -19,22 +19,22 @@ function getValues(values) {
   return values;
 }
 
-function getValueFiles(files) {
-  let fileList;
-  if (typeof files === "string") {
+function getList(x) {
+  let items = [];
+  if (typeof x === "string") {
     try {
-      fileList = JSON.parse(files);
+      items = JSON.parse(x);
     } catch (err) {
       // Assume it's a single string.
-      fileList = [files];
+      items = [x];
     }
   } else {
-    fileList = files;
+    items = x;
   }
-  if (!Array.isArray(fileList)) {
+  if (!Array.isArray(items)) {
     return [];
   }
-  return fileList.filter(f => !!f);
+  return items.filter(f => !!f);
 }
 
 function getInput(name, options) {
@@ -58,7 +58,7 @@ async function run() {
     const chart = chartName(getInput("chart", required));
     const version = getInput("version");
     const values = getValues(getInput("values"));
-    const valueFiles = getValueFiles(getInput("value_files"));
+    const valueFiles = getList(getInput("value_files"));
     const timeout = getInput("timeout");
     const repo = getInput("repo");
     const dryRun = core.getInput("dry-run");
