@@ -8,14 +8,11 @@ Deploys a helm chart using GitHub actions
 Inputs below are additionally loaded from the payload of the deployment event
 payload if the action was triggered by a deployment.
 
-- `release`: Helm release name. Will be combined with track if set. (required)
+- `release`: Helm release name. (required)
 - `namespace`: Kubernetes namespace name. (required)
-- `chart`: Helm chart path. If set to "app" this will use the built in helm
-  chart found in this repository. (required)
-- `version`: The version of the helm chart you want to deploy
+- `chart`: Helm chart path.
+- `version`: The version of the helm chart you want to deploy.
 - `values`: Helm chart values, expected to be a YAML or JSON string.
-- `task`: Task name. If the task is "remove" it will remove the configured helm
-  release.
 - `dry-run`: Helm dry-run option.
 - `value-files`: Additional value files to apply to the helm chart. Expects a
   JSON encoded array or a string.
