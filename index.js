@@ -1,12 +1,9 @@
 const core = require("@actions/core");
-const github = require("@actions/github");
 const exec = require("@actions/exec");
 const fs = require("fs");
 const util = require("util");
-const Mustache = require("mustache");
 
 const writeFile = util.promisify(fs.writeFile);
-const readFile = util.promisify(fs.readFile);
 const required = { required: true };
 
 function getValues(values) {
