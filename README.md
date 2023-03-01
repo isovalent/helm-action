@@ -19,7 +19,7 @@ payload if the action was triggered by a deployment.
 - `secrets`: Secret variables to include in value file interpolation. Expects a
   JSON encoded map.
 - `timeout`: specify a timeout for helm deployment
-- `repo`: specify the URL for a helm repo to come from
+- `repo`: specify a URL for a helm repo to install the chart from
 - `atomic`: If true, upgrade process rolls back changes made in case of failed upgrade. Defaults to false.
 
 
