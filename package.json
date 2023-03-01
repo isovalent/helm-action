@@ -16,5 +16,8 @@
   },
   "scripts": {
     "release": "standard-version"
+  },
+  "devDependencies": {
+    "eslint": "^8.35.0"
   }
 }

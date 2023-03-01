@@ -2,6 +2,7 @@ const core = require("@actions/core");
 const exec = require("@actions/exec");
 const fs = require("fs");
 const util = require("util");
+const process = require("process");
 
 const writeFile = util.promisify(fs.writeFile);
 const required = { required: true };
