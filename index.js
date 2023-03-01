@@ -53,8 +53,6 @@ function getInput(name, options) {
  */
 async function run() {
   try {
-    const context = github.context;
-
     const release = getInput("release", required);
     const namespace = getInput("namespace", required);
     const chart = chartName(getInput("chart", required));
