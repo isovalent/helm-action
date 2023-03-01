@@ -33,6 +33,10 @@ inputs:
   atomic:
     description: If true, upgrade process rolls back changes made in case of failed upgrade. Defaults to false.
     required: false
+  repositories:
+    description: |
+      A string containing a JSON list of helm repositories objects to add. Eg: [{"name": "bitnami", "url": "https://charts.bitnami.com/bitnami"}]
+    required: false
 runs:
   using: docker
   image: Dockerfile
