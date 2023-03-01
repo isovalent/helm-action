@@ -107,7 +107,7 @@ async function run() {
 
     core.debug(`env: KUBECONFIG="${process.env.KUBECONFIG}"`);
 
-    await exec.exec(helm, args);
+    await exec.exec('helm', args);
   } catch (error) {
     core.error(error);
     core.setFailed(error.message);
