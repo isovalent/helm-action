@@ -61,6 +61,7 @@ async function run() {
     const valueFiles = getList(getInput("value_files"));
     const timeout = getInput("timeout");
     const repo = getInput("repo");
+    const repositories = getList(getInput("repositories"));
     const dryRun = core.getInput("dry-run");
     const atomic = getInput("atomic") || false;
 
@@ -74,7 +75,13 @@ async function run() {
     core.debug(`param: valueFiles = "${JSON.stringify(valueFiles)}"`);
     core.debug(`param: timeout = "${timeout}"`);
     core.debug(`param: repo = "${repo}"`);
+    core.debug(`param: repositories = "${repositories}"`);
     core.debug(`param: atomic = "${atomic}"`);
+
+    // Add the helm repositories listed
+    for (const repo in repositories) {
+      await exec.exec('helm', 'repo', 'add', repo.name, repo.url)
+    }
 
     // Setup command options and arguments.
     const args = [
