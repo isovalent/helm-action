@@ -55,7 +55,7 @@ async function run() {
   try {
     const release = getInput("release", required);
     const namespace = getInput("namespace", required);
-    const chart = chartName(getInput("chart", required));
+    const chart = getInput("chart", required);
     const version = getInput("version");
     const values = getValues(getInput("values"));
     const valueFiles = getList(getInput("value_files"));
