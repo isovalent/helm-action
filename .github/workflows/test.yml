@@ -6,5 +6,18 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - uses: 'actions/checkout@v1'
-      - name: 'Docker Build'
-        run: 'docker build -t helm .'
+      - name: Create kind cluster
+        uses: helm/kind-action@d8ccf8fb623ce1bb360ae2f45f323d9d5c5e9f00
+      - name: Set up Helm
+        uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78
+        with:
+          version: v3.11.1
+      - name: 'Install a chart'
+        uses: './'
+        with:
+          release: 'mysql'
+          namespace: 'default'
+          chart: 'mysql'
+          repo: https://charts.bitnami.com/bitnami
+          values: |
+            fullnameOverride: mysql
