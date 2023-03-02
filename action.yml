@@ -38,5 +38,5 @@ inputs:
       A string containing a JSON list of helm repositories objects to add. Eg: [{"name": "bitnami", "url": "https://charts.bitnami.com/bitnami"}]
     required: false
 runs:
-  using: docker
-  image: Dockerfile
+  using: 'node16'
+  main: 'index.js'
