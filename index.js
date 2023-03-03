@@ -1,21 +1,13 @@
 const core = require("@actions/core");
 const exec = require("@actions/exec");
 const fs = require("fs");
+const os = require("os");
+const path = require("path");
 const util = require("util");
 const process = require("process");
 
 const writeFile = util.promisify(fs.writeFile);
 const required = { required: true };
-
-function getValues(values) {
-  if (!values) {
-    return "{}";
-  }
-  if (typeof values === "object") {
-    return JSON.stringify(values);
-  }
-  return values;
-}
 
 function getList(x) {
   let items = [];
@@ -50,12 +42,15 @@ function getInput(name, options) {
  * Run executes the helm deployment.
  */
 async function run() {
+  const runnerTempDir = process.env.RUNNER_TEMP || os.tmpdir();
+  let outputsDir;
   try {
+    outputsDir = fs.mkdtempSync(path.join(runnerTempDir, 'helm-action-'));
     const release = getInput("release", required);
     const namespace = getInput("namespace", required);
     const chart = getInput("chart", required);
     const version = getInput("version");
-    const values = getValues(getInput("values"));
+    const values = getInput("values");
     const valueFiles = getList(getInput("value_files"));
     const timeout = getInput("timeout");
     const repo = getInput("repo");
@@ -104,8 +99,11 @@ async function run() {
     }
     valueFiles.forEach(f => args.push(`--values=${f}`));
 
-    await writeFile("./values.yml", values);
-    args.push("--values=./values.yml");
+    if (values) {
+      const valuesFile = `${outputsDir}/values.yml`;
+      await writeFile(valuesFile, values);
+      args.push("--values", valuesFile);
+    }
 
     core.debug(`env: KUBECONFIG="${process.env.KUBECONFIG}"`);
 
@@ -113,6 +111,8 @@ async function run() {
   } catch (error) {
     core.error(error);
     core.setFailed(error.message);
+  } finally {
+    fs.rmSync(outputsDir, {recursive: true}, )
   }
 }
 
