@@ -12,6 +12,12 @@ jobs:
         uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78
         with:
           version: v3.11.1
+      - name: Create example-values.yaml
+        run: |
+          cat << EOF > example-values.yaml
+          metrics:
+            enabled: true
+          EOF
       - name: 'Install a chart'
         uses: './'
         with:
@@ -21,3 +27,7 @@ jobs:
           repo: https://charts.bitnami.com/bitnami
           values: |
             fullnameOverride: mysql
+          value-files: >-
+            # Example values can be provided as a YAML or JSON list of strings,
+            # where each string is a filename.
+            - example-values.yaml
