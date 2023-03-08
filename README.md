@@ -49,10 +49,8 @@ jobs:
         repo: https://charts.bitnami.com/bitnami
         values: |
           fullnameOverride: mysql
-        # You can also reference files by providing an array of filenames
-        # value-files: >-
-        #   [
-        #     "values.yaml",
-        #     "values.production.yaml"
-        #   ]
+        value-files: >-
+          # Example values can be provided as a YAML or JSON list of strings,
+          # where each string is a filename.
+          - example-values.yaml
 ```

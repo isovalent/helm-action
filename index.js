@@ -5,6 +5,7 @@ const os = require("os");
 const path = require("path");
 const util = require("util");
 const process = require("process");
+const yaml = require("js-yaml")
 
 const writeFile = util.promisify(fs.writeFile);
 const required = { required: true };
@@ -13,7 +14,7 @@ function getList(x) {
   let items = [];
   if (typeof x === "string") {
     try {
-      items = JSON.parse(x);
+      items = yaml.load(x);
     } catch (err) {
       // Assume it's a single string.
       items = [x];

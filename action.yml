@@ -21,7 +21,7 @@ inputs:
     description: Simulate an upgrade.
     required: false
   value-files:
-    description: Additional value files to apply to the helm chart. Expects JSON encoded
+    description: Additional value files to apply to the helm chart. Expects YAML/JSON encoded
       array or a string.
     required: false
   timeout:
