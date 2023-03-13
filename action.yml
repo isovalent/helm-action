@@ -37,6 +37,9 @@ inputs:
     description: |
       A string containing a JSON list of helm repositories objects to add. Eg: [{"name": "bitnami", "url": "https://charts.bitnami.com/bitnami"}]
     required: false
+  upgrade-crds:
+    description: If true, upgrade CRDs. Default behavior of helm is to not upgrade CRDs. Defaults to false.
+    required: false
 runs:
   using: 'node16'
   main: 'index.js'
