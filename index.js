@@ -10,6 +10,10 @@ const yaml = require("js-yaml")
 const writeFile = util.promisify(fs.writeFile);
 const required = { required: true };
 
+function yamlDumpAll(docs) {
+  return docs.map(doc => yaml.dump(doc)).join('---\n');
+}
+
 function getList(x) {
   let items = [];
   if (typeof x === "string") {
@@ -58,6 +62,7 @@ async function run() {
     const repositories = getList(getInput("repositories"));
     const dryRun = core.getInput("dry-run");
     const atomic = getInput("atomic") || false;
+    const upgradeCRDs = getInput("upgrade-crds") || false;
 
     core.debug(`param: release = "${release}"`);
     core.debug(`param: namespace = "${namespace}"`);
@@ -73,7 +78,7 @@ async function run() {
 
     // Add the helm repositories listed
     for (const repo in repositories) {
-      await exec.exec('helm', 'repo', 'add', repo.name, repo.url)
+      await exec.exec('helm', ['repo', 'add', repo.name, repo.url])
     }
 
     // Setup command options and arguments.
@@ -83,17 +88,28 @@ async function run() {
       chart,
       "--install",
       "--wait",
+      "--create-namespace",
       `--namespace=${namespace}`,
+    ];
+
+    // Used for upgradeCRDs
+    const templateArgs = [
+      'template',
+      chart,
+      '--dependency-update',
+      '--include-crds',
     ];
 
     if (version) {
       args.push(`--version=${version}`);
-    }
-    if (timeout) {
-      args.push(`--timeout=${timeout}`);
+      templateArgs.push(`--version=${version}`);
     }
     if (repo) {
       args.push(`--repo=${repo}`);
+      templateArgs.push(`--repo=${repo}`);
+    }
+    if (timeout) {
+      args.push(`--timeout=${timeout}`);
     }
     if (atomic === true) {
       args.push("--atomic");
@@ -108,6 +124,30 @@ async function run() {
 
     core.debug(`env: KUBECONFIG="${process.env.KUBECONFIG}"`);
 
+    // Run helm template to get the full set of resources, and then filter
+    // to just the CRDs.
+    // Output the CRDs to a new file and then kubectl apply them.
+    if (upgradeCRDs) {
+      let crds = [];
+      const output = await exec.getExecOutput('helm', templateArgs, {silent: true});
+      yaml.loadAll(output.stdout, doc => {
+        if (doc && doc.kind == 'CustomResourceDefinition') {
+          core.debug(`found CRD ${doc.metadata.name}`);
+          crds.push(doc);
+        }
+      });
+      if (crds.length != 0) {
+        const crdsFile = `${outputsDir}/crds.yml`;
+        const crdsYAML = yamlDumpAll(crds);
+        await writeFile(crdsFile, crdsYAML);
+        // Server-side applied needed to avoid long annotations on CRDs
+        await exec.exec('kubectl', ['apply', '--server-side=true', '-f', crdsFile])
+      } else {
+        core.debug('no CRDs to upgrade');
+      }
+    }
+
+    // perform the actual helm upgrade
     await exec.exec('helm', args);
   } catch (error) {
     core.error(error);

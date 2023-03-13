@@ -31,3 +31,16 @@ jobs:
             # Example values can be provided as a YAML or JSON list of strings,
             # where each string is a filename.
             - example-values.yaml
+
+      - name: 'Install a chart that has CRDs'
+        uses: './'
+        with:
+          release: 'kube-prometheus'
+          namespace: 'monitoring'
+          chart: 'kube-prometheus-stack'
+          repo: https://prometheus-community.github.io/helm-charts
+          version: 45.7.1
+          upgrade-crds: true
+          values: |
+            fullnameOverride: prometheus-k8s
+            cleanPrometheusOperatorObjectNames: true
