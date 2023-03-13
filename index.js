@@ -73,7 +73,7 @@ async function run() {
 
     // Add the helm repositories listed
     for (const repo in repositories) {
-      await exec.exec('helm', 'repo', 'add', repo.name, repo.url)
+      await exec.exec('helm', ['repo', 'add', repo.name, repo.url])
     }
 
     // Setup command options and arguments.
