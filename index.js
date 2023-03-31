@@ -43,6 +43,30 @@ function getInput(name, options) {
   return val;
 }
 
+async function extractCRDs(chart, version, repo) {
+  const templateArgs = [
+    'template',
+    chart,
+    '--dependency-update',
+    '--include-crds',
+  ];
+  if (version) {
+    templateArgs.push(`--version=${version}`);
+  }
+  if (repo) {
+    templateArgs.push(`--repo=${repo}`);
+  }
+  let crds = [];
+  const output = await exec.getExecOutput('helm', templateArgs, {silent: true});
+  yaml.loadAll(output.stdout, doc => {
+    if (doc && doc.kind == 'CustomResourceDefinition') {
+      core.debug(`found CRD ${doc.metadata.name}`);
+      crds.push(doc);
+    }
+  });
+  return crds;
+}
+
 /**
  * Run executes the helm deployment.
  */
@@ -92,21 +116,11 @@ async function run() {
       `--namespace=${namespace}`,
     ];
 
-    // Used for upgradeCRDs
-    const templateArgs = [
-      'template',
-      chart,
-      '--dependency-update',
-      '--include-crds',
-    ];
-
     if (version) {
       args.push(`--version=${version}`);
-      templateArgs.push(`--version=${version}`);
     }
     if (repo) {
       args.push(`--repo=${repo}`);
-      templateArgs.push(`--repo=${repo}`);
     }
     if (timeout) {
       args.push(`--timeout=${timeout}`);
@@ -128,14 +142,7 @@ async function run() {
     // to just the CRDs.
     // Output the CRDs to a new file and then kubectl apply them.
     if (upgradeCRDs) {
-      let crds = [];
-      const output = await exec.getExecOutput('helm', templateArgs, {silent: true});
-      yaml.loadAll(output.stdout, doc => {
-        if (doc && doc.kind == 'CustomResourceDefinition') {
-          core.debug(`found CRD ${doc.metadata.name}`);
-          crds.push(doc);
-        }
-      });
+      const crds = await extractCRDs(chart, version, repo);
       if (crds.length != 0) {
         const crdsFile = `${outputsDir}/crds.yml`;
         const crdsYAML = yamlDumpAll(crds);

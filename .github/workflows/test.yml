@@ -44,3 +44,14 @@ jobs:
           values: |
             fullnameOverride: prometheus-k8s
             cleanPrometheusOperatorObjectNames: true
+
+      - name: 'Install a chart that has that use YAML implicit block mappings'
+        uses: './'
+        with:
+          release: 'clickhouse-operator'
+          namespace: 'clickhouse-operator'
+          chart: 'altinity-clickhouse-operator'
+          repo: https://docs.altinity.com/clickhouse-operator
+          version: 0.20.3
+          # needed to test CRD extraction logic for CRDs containing YAML implicit block mappings
+          upgrade-crds: true
