@@ -5,7 +5,7 @@ jobs:
   test:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@v1'
+      - uses: 'actions/checkout@v3'
       - name: Create kind cluster
         uses: helm/kind-action@d8ccf8fb623ce1bb360ae2f45f323d9d5c5e9f00
       - name: Set up Helm
