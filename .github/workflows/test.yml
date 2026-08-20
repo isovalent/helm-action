@@ -5,11 +5,11 @@ jobs:
   test:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@v3'
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Create kind cluster
-        uses: helm/kind-action@fa81e57adff234b2908110485695db0f181f3c67
+        uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # v1.14.0
       - name: Set up Helm
-        uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78
+        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
         with:
           version: v3.11.1
       - name: Create example-values.yaml
@@ -21,12 +21,13 @@ jobs:
       - name: 'Install a chart'
         uses: './'
         with:
-          release: 'mysql'
+          release: 'podinfo'
           namespace: 'default'
-          chart: 'mysql'
-          repo: https://charts.bitnami.com/bitnami
+          chart: 'podinfo'
+          repo: https://stefanprodan.github.io/podinfo
+          version: 6.14.1
           values: |
-            fullnameOverride: mysql
+            fullnameOverride: podinfo
           value-files: >-
             # Example values can be provided as a YAML or JSON list of strings,
             # where each string is a filename.

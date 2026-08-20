@@ -41,5 +41,5 @@ inputs:
     description: If true, upgrade CRDs. Default behavior of helm is to not upgrade CRDs. Defaults to false.
     required: false
 runs:
-  using: 'node16'
+  using: 'node24'
   main: 'index.js'
